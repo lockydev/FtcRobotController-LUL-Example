@@ -31,8 +31,16 @@ package org.firstinspires.ftc.teamcode.examples;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.teamcode.examples.testactions.LiftDown;
+import org.firstinspires.ftc.teamcode.examples.testactions.LiftUp;
+import org.firstinspires.ftc.teamcode.examples.testactions.LiftWallHeight;
+
+import dev.locky.lulftc.action.LULAction;
+import dev.locky.lulftc.action.SimpleActionList;
 import dev.locky.lulftc.controller.GamepadButtons;
 import dev.locky.lulftc.controller.GamepadTriggers;
 import dev.locky.lulftc.controller.SMARTGamepad;
@@ -51,18 +59,32 @@ import dev.locky.lulftc.controller.SMARTGamepad;
  * Remove or comment out the @Disabled line to add this OpMode to the Driver Station OpMode list
  */
 
-@TeleOp(name="SMARTGamepadTest", group="LUL-FTC Examples")
-public class SMARTGamepadTest extends LinearOpMode {
+@TeleOp(name="SimpleActionListTest", group="LUL-FTC Examples")
+public class SimpleActionListTest extends LinearOpMode {
 
     // Declare OpMode members.
     private ElapsedTime runtime = new ElapsedTime();
     private SMARTGamepad gp1;
-    private int pressedCount = 0;
+    private DcMotorEx liftMotor;
+    private SimpleActionList testActionList;
+
 
     @Override
     public void runOpMode() {
 
         gp1 = new SMARTGamepad(gamepad1);
+
+        liftMotor = hardwareMap.get(DcMotorEx.class, "Slides");
+        liftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        liftMotor.setTargetPosition(0);
+        liftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        liftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+        testActionList = new SimpleActionList( new LULAction[]{
+                new LiftDown(liftMotor),
+                new LiftWallHeight(liftMotor),
+                new LiftUp(liftMotor)
+            }, true);
 
 
         telemetry.addData("Status", "Initialized");
@@ -72,30 +94,30 @@ public class SMARTGamepadTest extends LinearOpMode {
         // Wait for the game to start (driver presses START)
         waitForStart();
         runtime.reset();
+        liftMotor.setPower(0.4);
 
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
             gp1.startUpdate(gamepad1);
 
-            boolean pressed = gp1.release(GamepadButtons.dpad_down);
-
-
-            if (pressed) {
-                pressedCount -= 1;
-            }
-            if (gp1.press(GamepadTriggers.left_trigger)) {
-                pressedCount += 1;
+            if (gp1.press(GamepadButtons.dpad_up)) {
+                testActionList.next();
+            } else if (gp1.press(GamepadButtons.dpad_down)) {
+                testActionList.prev();
             }
 
             // Show the elapsed game time and wheel power.
             telemetry.addData("Status", "Run Time: " + runtime.toString());
-            telemetry.addData("SMART Gamepad 1", gp1.down(GamepadTriggers.left_trigger));
-            telemetry.addData("Gamepad 1", gamepad1.dpad_down);
+            telemetry.addData("Action List Index", testActionList.getCurrentActionIndex());
+            telemetry.addData("Action List Value", testActionList.getCurrentAction().getName());
+            telemetry.addData("Action List Blocked", testActionList.isBlocked());
 
-            telemetry.addData("Gamepad dpad_down release", pressed);
-            telemetry.addData("Gamepad dpad_down pressedOnce", pressedCount);
+            telemetry.addData("Lift Target Pos", liftMotor.getTargetPosition());
+            telemetry.addData("Lift Current Pos", liftMotor.getCurrentPosition());
 
             telemetry.update();
+
+            testActionList.endUpdate();
 
         }
     }

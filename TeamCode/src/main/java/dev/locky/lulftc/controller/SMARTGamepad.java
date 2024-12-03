@@ -29,10 +29,10 @@ public class SMARTGamepad  {
         }
     }
 
-    public boolean press(GamepadEmulatedButtons button) {
+    public boolean press(GamepadTriggers button) {
         return this.press(button, 0.5F);
     }
-    public boolean press(GamepadEmulatedButtons button, float threshold) {
+    public boolean press(GamepadTriggers button, float threshold) {
         try {
             return !((float) previousGamepad.getClass().getField(button.name()).get(previousGamepad) > threshold)
                     && (float) currentGamepad.getClass().getField(button.name()).get(currentGamepad) > threshold;
@@ -49,10 +49,10 @@ public class SMARTGamepad  {
         }
     }
 
-    public boolean release(GamepadEmulatedButtons button) {
+    public boolean release(GamepadTriggers button) {
         return this.release(button, 0.5F);
     }
-    public boolean release(GamepadEmulatedButtons button, float threshold) {
+    public boolean release(GamepadTriggers button, float threshold) {
         try {
             return (float) previousGamepad.getClass().getField(button.name()).get(previousGamepad) > threshold
                     && !((float) currentGamepad.getClass().getField(button.name()).get(currentGamepad) > threshold);
@@ -61,10 +61,10 @@ public class SMARTGamepad  {
         }
     }
 
-    public boolean down(GamepadEmulatedButtons button) {
+    public boolean down(GamepadTriggers button) {
         return this.down(button, 0.5F);
     }
-    public boolean down(GamepadEmulatedButtons button, float threshold) {
+    public boolean down(GamepadTriggers button, float threshold) {
         try {
             return (float) currentGamepad.getClass().getField(button.name()).get(currentGamepad) > threshold;
         } catch (NoSuchFieldException | IllegalAccessException e) {
