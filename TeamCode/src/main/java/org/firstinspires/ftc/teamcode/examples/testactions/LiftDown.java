@@ -6,10 +6,9 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 
 import dev.locky.lulftc.action.InitialLULAction;
 import dev.locky.lulftc.action.LULAction;
-import dev.locky.lulftc.action.SimpleActionList;
 
 public class LiftDown implements LULAction, InitialLULAction {
-     private final String name = "Lift Down";
+    private final String name = "Lift Down";
 
     DcMotorEx liftMotor;
 
@@ -31,12 +30,12 @@ public class LiftDown implements LULAction, InitialLULAction {
     }
 
     @Override
-    public boolean isCompleteWhenNextAndPeriodic(SimpleActionList actionList) {
+    public boolean isCompleteWhenNext() {
         return withinTolerance(liftMotor.getCurrentPosition(), 0, 50 );
     }
     @Override
-    public boolean isCompleteWhenPrevAndPeriodic(SimpleActionList actionList) {
-        return this.isCompleteWhenNextAndPeriodic(actionList);
+    public boolean isCompleteWhenPrev() {
+        return this.isCompleteWhenNext();
     }
 
     @Override

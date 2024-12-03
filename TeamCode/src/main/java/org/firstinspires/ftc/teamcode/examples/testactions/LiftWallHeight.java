@@ -36,16 +36,22 @@ public class LiftWallHeight implements LULAction {
     }
 
     @Override
-    public boolean isCompleteWhenNextAndPeriodic(SimpleActionList actionList) {
-        if (withinTolerance(liftMotor.getCurrentPosition(), liftTargetPosition, 50 )) {
-            actionList.next();
-            return true;
-        }
-        return false;
+    public boolean isCompleteWhenNext() {
+        return withinTolerance(liftMotor.getCurrentPosition(), liftTargetPosition, 50 );
     }
     @Override
-    public boolean isCompleteWhenPrevAndPeriodic(SimpleActionList actionList) {
-        return withinTolerance(liftMotor.getCurrentPosition(), liftTargetPosition, 50 );
+    public boolean isCompleteWhenPrev() {
+        return isCompleteWhenNext();
+    }
+
+    @Override
+    public void onCompleteWhenNext(SimpleActionList actionList) {
+        actionList.next();
+    }
+
+    @Override
+    public void onCompleteWhenPrev(SimpleActionList actionList) {
+        return;
     }
 
     @Override

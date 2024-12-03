@@ -48,13 +48,17 @@ public class SimpleActionList {
     }
 
     public void endUpdate() {
+        if (!this.isBlocked()) return;
+
         if (this.currentDirection == ActionDirection.NEXT) {
-            if (this.getCurrentAction().isCompleteWhenNextAndPeriodic(this)) {
+            if (this.getCurrentAction().isCompleteWhenNext()) {
                 blocked = false;
+                this.getCurrentAction().onCompleteWhenNext(this);
             }
         } else if (this.currentDirection == ActionDirection.PREV) {
-            if (this.getCurrentAction().isCompleteWhenPrevAndPeriodic(this)) {
+            if (this.getCurrentAction().isCompleteWhenPrev()) {
                 blocked = false;
+                this.getCurrentAction().onCompleteWhenPrev(this);
             }
         }
     }

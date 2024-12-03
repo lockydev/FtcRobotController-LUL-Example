@@ -5,11 +5,19 @@ public interface LULAction {
     void runWhenNext();
     void runWhenPrev();
 
-    default boolean isCompleteWhenNextAndPeriodic(SimpleActionList actionList) {
+    default boolean isCompleteWhenNext() {
         return true;
     }
-    default boolean isCompleteWhenPrevAndPeriodic(SimpleActionList actionList) {
+    default boolean isCompleteWhenPrev() {
         return true;
     }
+
+    default void onCompleteWhenNext(SimpleActionList actionList) {
+        return;
+    }
+    default void onCompleteWhenPrev(SimpleActionList actionList) {
+        return;
+    }
+
     String getName();
 }

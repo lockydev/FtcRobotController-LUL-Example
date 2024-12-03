@@ -6,9 +6,7 @@ import org.firstinspires.ftc.robotcore.internal.system.Deadline;
 
 import java.util.concurrent.TimeUnit;
 
-import dev.locky.lulftc.action.InitialLULAction;
 import dev.locky.lulftc.action.LULAction;
-import dev.locky.lulftc.action.SimpleActionList;
 
 public class LiftUp implements LULAction {
     String name = "Lift Up";
@@ -31,13 +29,13 @@ public class LiftUp implements LULAction {
     }
 
     @Override
-    public boolean isCompleteWhenNextAndPeriodic(SimpleActionList actionList) {
+    public boolean isCompleteWhenNext() {
         return wait.hasExpired();
     }
 
     @Override
-    public boolean isCompleteWhenPrevAndPeriodic(SimpleActionList actionList) {
-        return this.isCompleteWhenNextAndPeriodic(actionList);
+    public boolean isCompleteWhenPrev() {
+        return this.isCompleteWhenNext();
     }
 
     @Override
